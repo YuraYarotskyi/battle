@@ -109,44 +109,110 @@ void remove_player()
 
 }
 
+auto game(vector<PlayerInfo> stronger_team, vector<PlayerInfo> weaker_team)
+{
+    while (true)
+    {
+        if(stronger_team[0].health > weaker_team[0].power)
+        {
+            stronger_team[0].health -= weaker_team[0].power;
+            cout << weaker_team[0].name << " has attacked " << stronger_team[0].name << "\n" << stronger_team[0].name << "'s health: " << stronger_team[0].health << endl;
+        }
+        if(weaker_team[0].health > stronger_team[0].power)
+        {
+            weaker_team[0].health -= stronger_team[0].power;
+            cout << stronger_team[0].name << " has attacked " << weaker_team[0].name << "\n" << weaker_team[0].name << "'s health: " << weaker_team[0].health << endl;
+        }
+        if(weaker_team[0].health <= stronger_team[0].power)
+        {
+            cout << stronger_team[0].name << " has killed " << weaker_team[0].name << "\n" << stronger_team[0].name << "'s health:" << stronger_team[0].health << endl;
+            weaker_team.erase(weaker_team.begin());
+        }
+        if(stronger_team[0].health <= weaker_team[0].power)
+        {
+            cout << weaker_team[0].name << " has killed " << stronger_team[0].name << "\n" << weaker_team[0].name << "'s health: " << weaker_team[0].health << endl;
+            stronger_team.erase(stronger_team.begin());
+        }
+
+        if(weaker_team.empty())
+        {
+            cout << "Team" << stronger_team[0].clan_id << " won!" << endl;
+            break;
+            return 0;
+        }
+    }
+}
+
 void start_game()
 {
-    cout << "Start game" << endl;
-
-    int team0_health = 0, team1_health = 0, team0_strength = 0, team1_strength = 0;
-
-    cout << "Team0:" << endl; 
-
-    for( auto el : team0)
+    if (team0.empty())
     {
-        cout << el.name << endl;
-        team0_health += el.health;
-        team0_strength += el.power;
+        cout << "Team0 is empty! \nPlease add players." << endl;
+    } else if (team1.empty())
+    {
+        cout << "Team1 is empty! \nPlease add players." << endl;
+    } else {
+        int team0_health = 0, team1_health = 0, team0_strength = 0, team1_strength = 0;
+
+        for( auto el : team0)
+        {
+            team0_strength += el.power;
+        }
+
+        for( auto el : team1)
+        {
+            team1_health += el.health;
+            team1_strength += el.power;
+        }
+
+        if(team1_health > team0_strength)
+        {
+            game(team1, team0);
+        } 
+        else if (team0_health > team1_strength)
+        {
+            game(team0, team1);
+        } 
+        else 
+        {
+            cout << "Draw!" << endl;
+        }
+    }
+}
+
+void player_list()
+{
+    if (team0.empty() == false)
+    {
+        cout << "Team0:" << endl;
+
+        for(auto element : team0)
+        {
+            cout << element.name << endl;
+        }
+    } else {
+        cout << "Team0 is empty" << endl;
     }
 
-    cout << "Team0 health: " << team0_health << "\nTeam0 power: " << team0_strength << endl;
-
-
-    cout << "Team1:" << endl; 
-
-    for( auto el : team1)
+    if (team1.empty() == false)
     {
-        cout << el.name << endl;
-        team1_health += el.health;
-        team1_strength += el.power;
+        cout << "Team1:" << endl;
+        for (auto element : team1)
+        {
+            cout << element.name << endl;
+        }
+    } else {
+        cout << "Team1 is empty" << endl;
     }
 
-    cout << "Team1 health: " << team1_health << "\nTeam1 power: " << team1_strength << endl;
 }
 
 
 int main()
 {
-
-
     while (true){
         int arg;
-        cout << "Menu: \n0 - add player \n1 - remove player \n2 - start game" << endl;
+        cout << endl << "Menu: \n0 - add player \n1 - remove player \n2 - start game \n3 - list players" << endl;
         cin >> arg;
 
 
@@ -159,10 +225,12 @@ int main()
         } else if (arg == 2)
         {
             start_game();
+        } else if (arg == 3)
+        {
+            player_list();
         } else {
             cout << "Error, wrong argument, enter valid argument." << endl;
         }
-
     }
 
     return 0;
